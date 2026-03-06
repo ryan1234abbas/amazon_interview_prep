@@ -8,7 +8,10 @@
  */
 
 // Backend API base URL
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+// In production (Vercel), use relative /api path
+// In development, use localhost
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD ? '/api' : 'http://localhost:3001');
 
 // WebSocket URL for transcription
 export const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:3001/transcribe';
