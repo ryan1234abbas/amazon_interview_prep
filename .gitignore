@@ -33,3 +33,5 @@ coverage
 
 # AWS credentials (never commit)
 .aws/
+.vercel
+.env*.local
