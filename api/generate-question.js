@@ -1,13 +1,5 @@
 const { BedrockRuntimeClient, ConverseCommand } = require('@aws-sdk/client-bedrock-runtime');
 
-const bedrockClient = new BedrockRuntimeClient({
-  region: process.env.AWS_REGION || 'us-east-1',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
-
 const categories = [
   'leadership',
   'teamwork',
@@ -18,6 +10,13 @@ const categories = [
 ];
 
 module.exports = async (req, res) => {
+  const bedrockClient = new BedrockRuntimeClient({
+    region: process.env.AWS_REGION || 'us-east-1',
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+  });
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -68,9 +67,16 @@ Generate only the question text, nothing else.`;
     });
   } catch (error) {
     console.error('Error generating question:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      hasCredentials: !!(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY),
+      region: process.env.AWS_REGION,
+    });
     res.status(500).json({ 
       error: 'Failed to generate question',
-      details: error.message 
+      details: error.message,
+      hasCredentials: !!(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY),
     });
   }
 };
