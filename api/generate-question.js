@@ -72,11 +72,18 @@ Generate only the question text, nothing else.`;
       stack: error.stack,
       hasCredentials: !!(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY),
       region: process.env.AWS_REGION,
+      accessKeyIdLength: process.env.AWS_ACCESS_KEY_ID?.length || 0,
+      secretKeyLength: process.env.AWS_SECRET_ACCESS_KEY?.length || 0,
     });
     res.status(500).json({ 
       error: 'Failed to generate question',
       details: error.message,
       hasCredentials: !!(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY),
+      debug: {
+        region: process.env.AWS_REGION,
+        hasAccessKey: !!process.env.AWS_ACCESS_KEY_ID,
+        hasSecretKey: !!process.env.AWS_SECRET_ACCESS_KEY,
+      }
     });
   }
 };
